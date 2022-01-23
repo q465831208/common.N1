@@ -187,9 +187,137 @@ rm -rf {build,README.md}
 ################################################################################################################
 Diy_chajian() {
 echo
-make defconfig > /dev/null 2>&1
+make defconfig
 echo "TIME b \"					插件冲突信息\"" > ${Home}/CHONGTU
 
+if [[ `grep -c "CONFIG_PACKAGE_luci-app-docker=y" ${Home}/.config` -eq '1' ]]; then
+	if [[ `grep -c "CONFIG_PACKAGE_luci-app-dockerman=y" ${Home}/.config` -eq '1' ]]; then
+		sed -i 's/CONFIG_PACKAGE_luci-app-docker=y/# CONFIG_PACKAGE_luci-app-docker is not set/g' ${Home}/.config
+		sed -i 's/CONFIG_PACKAGE_luci-i18n-docker-zh-cn=y/# CONFIG_PACKAGE_luci-i18n-docker-zh-cn is not set/g' ${Home}/.config
+		echo "TIME r \"您同时选择luci-app-docker和luci-app-dockerman，插件有冲突，相同功能插件只能二选一，已删除luci-app-docker\"" >>CHONGTU
+		echo "TIME z \"\"" >>CHONGTU
+		echo "TIME b \"插件冲突信息\"" > ${Home}/Chajianlibiao
+	fi
+fi
+if [[ `grep -c "CONFIG_PACKAGE_luci-app-advanced=y" ${Home}/.config` -eq '1' ]]; then
+	if [[ `grep -c "CONFIG_PACKAGE_luci-app-fileassistant=y" ${Home}/.config` -eq '1' ]]; then
+		sed -i 's/CONFIG_PACKAGE_luci-app-fileassistant=y/# CONFIG_PACKAGE_luci-app-fileassistant is not set/g' ${Home}/.config
+		echo "TIME r \"您同时选择luci-app-advanced和luci-app-fileassistant，luci-app-advanced已附带luci-app-fileassistant，所以删除了luci-app-fileassistant\"" >>CHONGTU
+		echo "TIME z \"\"" >>CHONGTU
+		echo "TIME b \"插件冲突信息\"" > ${Home}/Chajianlibiao
+	fi
+fi
+if [[ `grep -c "CONFIG_PACKAGE_luci-app-adblock-plus=y" ${Home}/.config` -eq '1' ]]; then
+	if [[ `grep -c "CONFIG_PACKAGE_luci-app-adblock=y" ${Home}/.config` -eq '1' ]]; then
+		sed -i 's/CONFIG_PACKAGE_luci-app-adblock=y/# CONFIG_PACKAGE_luci-app-adblock is not set/g' ${Home}/.config
+		sed -i 's/CONFIG_PACKAGE_adblock=y/# CONFIG_PACKAGE_adblock is not set/g' ${Home}/.config
+		sed -i '/luci-i18n-adblock/d' ${Home}/.config
+		echo "TIME r \"您同时选择luci-app-adblock-plus和luci-app-adblock，插件有依赖冲突，只能二选一，已删除luci-app-adblock\"" >>CHONGTU
+		echo "TIME z \"\"" >>CHONGTU
+		echo "TIME b \"插件冲突信息\"" > ${Home}/Chajianlibiao
+	fi
+fi
+if [[ `grep -c "CONFIG_PACKAGE_luci-app-kodexplorer=y" ${Home}/.config` -eq '1' ]]; then
+	if [[ `grep -c "CONFIG_PACKAGE_luci-app-vnstat=y" ${Home}/.config` -eq '1' ]]; then
+		sed -i 's/CONFIG_PACKAGE_luci-app-vnstat=y/# CONFIG_PACKAGE_luci-app-vnstat is not set/g' ${Home}/.config
+		sed -i 's/CONFIG_PACKAGE_vnstat=y/# CONFIG_PACKAGE_vnstat is not set/g' ${Home}/.config
+		sed -i 's/CONFIG_PACKAGE_vnstati=y/# CONFIG_PACKAGE_vnstati is not set/g' ${Home}/.config
+		sed -i 's/CONFIG_PACKAGE_libgd=y/# CONFIG_PACKAGE_libgd is not set/g' ${Home}/.config
+		sed -i '/luci-i18n-vnstat/d' ${Home}/.config
+		echo "TIME r \"您同时选择luci-app-kodexplorer和luci-app-vnstat，插件有依赖冲突，只能二选一，已删除luci-app-vnstat\"" >>CHONGTU
+		echo "TIME z \"\"" >>CHONGTU
+		echo "TIME b \"插件冲突信息\"" > ${Home}/Chajianlibiao
+	fi
+fi
+if [[ `grep -c "CONFIG_PACKAGE_luci-app-ssr-plus=y" ${Home}/.config` -ge '1' ]]; then
+	if [[ `grep -c "CONFIG_PACKAGE_luci-app-cshark=y" ${Home}/.config` -eq '1' ]]; then
+		sed -i 's/CONFIG_PACKAGE_luci-app-cshark=y/# CONFIG_PACKAGE_luci-app-cshark is not set/g' ${Home}/.config
+		sed -i 's/CONFIG_PACKAGE_cshark=y/# CONFIG_PACKAGE_cshark is not set/g' ${Home}/.config
+		sed -i 's/CONFIG_PACKAGE_libustream-mbedtls=y/# CONFIG_PACKAGE_libustream-mbedtls is not set/g' ${Home}/.config
+		echo "TIME r \"您同时选择luci-app-ssr-plus和luci-app-cshark，插件有依赖冲突，只能二选一，已删除luci-app-cshark\"" >>CHONGTU
+		echo "TIME z \"\"" >>CHONGTU
+		echo "TIME b \"插件冲突信息\"" > ${Home}/Chajianlibiao
+	fi
+fi
+if [[ `grep -c "CONFIG_PACKAGE_wpad-openssl=y" ${Home}/.config` -eq '1' ]]; then
+	if [[ `grep -c "CONFIG_PACKAGE_wpad=y" ${Home}/.config` -eq '1' ]]; then
+		sed -i 's/CONFIG_PACKAGE_wpad=y/# CONFIG_PACKAGE_wpad is not set/g' ${Home}/.config
+	fi
+fi
+if [[ `grep -c "CONFIG_PACKAGE_dnsmasq-full=y" ${Home}/.config` -eq '1' ]]; then
+	if [[ `grep -c "CONFIG_PACKAGE_dnsmasq=y" ${Home}/.config` -eq '1' ]] || [[ `grep -c "CONFIG_PACKAGE_dnsmasq-dhcpv6=y" ${Home}/.config` -eq '1' ]]; then
+		sed -i 's/CONFIG_PACKAGE_dnsmasq=y/# CONFIG_PACKAGE_dnsmasq is not set/g' ${Home}/.config
+		sed -i 's/CONFIG_PACKAGE_dnsmasq-dhcpv6=y/# CONFIG_PACKAGE_dnsmasq-dhcpv6 is not set/g' ${Home}/.config
+	fi
+	if [[ `grep -c "CONFIG_PACKAGE_dnsmasq_full_conntrack=y" ${Home}/.config` -eq '1' ]]; then
+		sed -i 's/CONFIG_PACKAGE_dnsmasq_full_conntrack=y/# CONFIG_PACKAGE_dnsmasq_full_conntrack is not set/g' ${Home}/.config
+	fi
+fi
+if [[ `grep -c "CONFIG_PACKAGE_luci-app-samba4=y" ${Home}/.config` -eq '1' ]]; then
+	if [[ `grep -c "CONFIG_PACKAGE_luci-app-samba=y" ${Home}/.config` -eq '1' ]]; then
+		sed -i 's/CONFIG_PACKAGE_autosamba=y/# CONFIG_PACKAGE_autosamba is not set/g' ${Home}/.config
+		sed -i 's/CONFIG_PACKAGE_luci-app-samba=y/# CONFIG_PACKAGE_luci-app-samba is not set/g' ${Home}/.config
+		sed -i 's/CONFIG_PACKAGE_luci-i18n-samba-zh-cn=y/# CONFIG_PACKAGE_luci-i18n-samba-zh-cn is not set/g' ${Home}/.config
+		sed -i 's/CONFIG_PACKAGE_samba36-server=y/# CONFIG_PACKAGE_samba36-server is not set/g' ${Home}/.config
+		echo "TIME r \"您同时选择luci-app-samba和luci-app-samba4，插件有冲突，相同功能插件只能二选一，已删除luci-app-samba\"" >>CHONGTU
+		echo "TIME z \"\"" >>CHONGTU
+		echo "TIME b \"插件冲突信息\"" > ${Home}/Chajianlibiao
+	fi
+fi
+if [[ `grep -c "CONFIG_PACKAGE_luci-theme-argon=y" ${Home}/.config` -eq '1' ]]; then
+	if [[ `grep -c "CONFIG_PACKAGE_luci-theme-argon_new=y" ${Home}/.config` -eq '1' ]]; then
+		sed -i 's/CONFIG_PACKAGE_luci-theme-argon_new=y/# CONFIG_PACKAGE_luci-theme-argon_new is not set/g' ${Home}/.config
+		echo "TIME r \"您同时选择luci-theme-argon和luci-theme-argon_new，插件有冲突，相同功能插件只能二选一，已删除luci-theme-argon_new\"" >>CHONGTU
+		echo "TIME z \"\"" >>CHONGTU
+		echo "TIME b \"插件冲突信息\"" > ${Home}/Chajianlibiao
+	fi
+fi
+if [[ `grep -c "CONFIG_PACKAGE_luci-app-sfe=y" ${Home}/.config` -eq '1' ]]; then
+	if [[ `grep -c "CONFIG_PACKAGE_luci-app-flowoffload=y" ${Home}/.config` -eq '1' ]]; then
+		sed -i 's/CONFIG_DEFAULT_luci-app-flowoffload=y/# CONFIG_DEFAULT_luci-app-flowoffload is not set/g' ${Home}/.config
+		sed -i 's/CONFIG_PACKAGE_luci-app-flowoffload=y/# CONFIG_PACKAGE_luci-app-flowoffload is not set/g' ${Home}/.config
+		sed -i 's/CONFIG_PACKAGE_luci-i18n-flowoffload-zh-cn=y/# CONFIG_PACKAGE_luci-i18n-flowoffload-zh-cn is not set/g' ${Home}/.config
+		echo "TIME r \"提示：您同时选择了luci-app-sfe和luci-app-flowoffload，两个ACC网络加速，已删除luci-app-flowoffload\"" >>CHONGTU
+		echo "TIME z \"\"" >>CHONGTU
+		echo "TIME b \"插件冲突信息\"" > ${Home}/Chajianlibiao
+	fi
+fi
+if [[ `grep -c "CONFIG_PACKAGE_luci-ssl=y" ${Home}/.config` -eq '1' ]]; then
+	if [[ `grep -c "CONFIG_PACKAGE_libustream-wolfssl=y" ${Home}/.config` -eq '1' ]]; then
+		sed -i 's/CONFIG_PACKAGE_luci-ssl=y/# CONFIG_PACKAGE_luci-ssl is not set/g' ${Home}/.config
+		sed -i 's/CONFIG_PACKAGE_libustream-wolfssl=y/CONFIG_PACKAGE_libustream-wolfssl=m/g' ${Home}/.config
+		echo "TIME r \"您选择了luci-ssl会自带libustream-wolfssl，会和libustream-openssl冲突导致编译错误，已删除luci-ssl\"" >>CHONGTU
+		echo "TIME z \"\"" >>CHONGTU
+		echo "TIME b \"插件冲突信息\"" > ${Home}/Chajianlibiao
+	fi
+fi
+if [[ `grep -c "CONFIG_PACKAGE_luci-app-unblockneteasemusic=y" ${Home}/.config` -eq '1' ]]; then
+	if [[ `grep -c "CONFIG_PACKAGE_luci-app-unblockneteasemusic-go=y" ${Home}/.config` -eq '1' ]]; then
+		sed -i 's/CONFIG_PACKAGE_luci-app-unblockneteasemusic-go=y/# CONFIG_PACKAGE_luci-app-unblockneteasemusic-go is not set/g' ${Home}/.config
+		echo "TIME r \"您选择了luci-app-unblockneteasemusic-go，会和luci-app-unblockneteasemusic冲突导致编译错误，已删除luci-app-unblockneteasemusic-go\"" >>CHONGTU
+		echo "TIME z \"\"" >>CHONGTU
+		echo "TIME b \"插件冲突信息\"" > ${Home}/Chajianlibiao
+	fi
+	if [[ `grep -c "CONFIG_PACKAGE_luci-app-unblockmusic=y" ${Home}/.config` -eq '1' ]]; then
+		sed -i 's/CONFIG_PACKAGE_luci-app-unblockmusic=y/# CONFIG_PACKAGE_luci-app-unblockmusic is not set/g' ${Home}/.config
+		echo "TIME r \"您选择了luci-app-unblockmusic，会和luci-app-unblockneteasemusic冲突导致编译错误，已删除luci-app-unblockmusic\"" >>CHONGTU
+		echo "TIME z \"\"" >>CHONGTU
+		echo "TIME b \"插件冲突信息\"" > ${Home}/Chajianlibiao
+	fi
+fi
+if [[ `grep -c "CONFIG_PACKAGE_luci-i18n-qbittorrent-zh-cn=y" ${Home}/.config` -eq '0' ]]; then
+	sed -i 's/CONFIG_PACKAGE_luci-app-qbittorrent_static=y/# CONFIG_PACKAGE_luci-app-qbittorrent_static is not set/g' ${Home}/.config
+	sed -i 's/CONFIG_DEFAULT_luci-app-qbittorrent=y/# CONFIG_DEFAULT_luci-app-qbittorrent is not set/g' ${Home}/.config
+	sed -i 's/CONFIG_PACKAGE_luci-app-qbittorrent_dynamic=y/# CONFIG_PACKAGE_luci-app-qbittorrent_dynamic is not set/g' ${Home}/.config
+	sed -i 's/CONFIG_PACKAGE_qBittorrent-static=y/# CONFIG_PACKAGE_qBittorrent-static is not set/g' ${Home}/.config
+	sed -i 's/CONFIG_PACKAGE_qbittorrent=y/# CONFIG_PACKAGE_qbittorrent is not set/g' ${Home}/.config
+fi
+if [[ `grep -c "CONFIG_PACKAGE_luci-theme-argon=y" ${Home}/.config` -eq '1' ]]; then
+	if [[ `grep -c "CONFIG_PACKAGE_luci-app-argon-config=y" ${Home}/.config` == '0' ]]; then
+		sed -i '/luci-app-argon-config/d' ${Home}/.config
+		echo -e "\nCONFIG_PACKAGE_luci-theme-argon=y" >> ${Home}/.config
+	fi
+fi
 if [[ `grep -c "CONFIG_TARGET_ROOTFS_EXT4FS=y" ${Home}/.config` -eq '1' ]]; then
 	if [[ `grep -c "CONFIG_TARGET_ROOTFS_PARTSIZE" ${Home}/.config` -eq '0' ]]; then
 		sed -i '/CONFIG_TARGET_ROOTFS_PARTSIZE/d' ${Home}/.config > /dev/null 2>&1
@@ -237,9 +365,11 @@ if [[ "${REPO_BRANCH}" == "19.07" ]]; then
 	sed -i 's/PATCHVER:=4.19/PATCHVER:=4.14/g' target/linux/*/Makefile
 fi
 
-if [[ "${TARGET_BOARD}" == "x86" ]]; then
-	cp -Rf "${Home}"/build/common/Custom/DRM-I915 target/linux/x86/DRM-I915
-	for X in $(ls -1 target/linux/x86 | grep "config-"); do echo -e "\n$(cat target/linux/x86/DRM-I915)" >> target/linux/x86/${X}; done
+if [[ "${REPO_BRANCH}" == "19.07" ]] || [[ "${REPO_BRANCH}" == "master" ]]; then
+	if [[ "${TARGET_BOARD}" == "x86" ]]; then
+		cp -Rf "${Home}"/build/common/Custom/DRM-I915 target/linux/x86/DRM-I915
+		for X in $(ls -1 target/linux/x86 | grep "config-"); do echo -e "\n$(cat target/linux/x86/DRM-I915)" >> target/linux/x86/${X}; done
+	fi
 fi
 
 if [[ `grep -c "CONFIG_PACKAGE_ntfs-3g=y" ${Home}/.config` -eq '1' ]]; then
@@ -260,7 +390,7 @@ if [[ `grep -c "CONFIG_PACKAGE_luci-app-adguardhome=y" ${Home}/.config` -eq '1' 
 			Arch="armv7"
 		fi	
 	fi
-	if [[ "${Arch}" =~ (amd64|i386|armeb|armv7) ]]; then
+	if [[ "${Arch}" =~ (amd64|i386|arm64|armv7) ]]; then
 		downloader="curl -L -k --retry 2 --connect-timeout 20 -o"
 		latest_ver="$($downloader - https://api.github.com/repos/AdguardTeam/AdGuardHome/releases/latest 2>/dev/null|grep -E 'tag_name' |grep -E 'v[0-9.]+' -o 2>/dev/null)"
 		wget -q https://github.com/AdguardTeam/AdGuardHome/releases/download/${latest_ver}/AdGuardHome_linux_${Arch}.tar.gz
@@ -276,9 +406,7 @@ if [[ "${BY_INFORMATION}" == "true" ]]; then
 	grep -i CONFIG_PACKAGE_luci-app .config | grep  -v \# > Plug-in
 	grep -i CONFIG_PACKAGE_luci-theme .config | grep  -v \# >> Plug-in
 	if [[ `grep -c "CONFIG_PACKAGE_luci-i18n-qbittorrent-zh-cn=y" ${Home}/.config` -eq '0' ]]; then
-		if [[ `grep -c "luci-app-qbittorrent_static" ${Home}/Plug-in` -eq '1' ]]; then
-			sed -i '/qbittorrent/d' Plug-in
-		fi
+		sed -i '/qbittorrent/d' Plug-in
 	fi
 	sed -i '/INCLUDE/d' Plug-in > /dev/null 2>&1
 	sed -i '/=m/d' Plug-in > /dev/null 2>&1
@@ -287,27 +415,20 @@ if [[ "${BY_INFORMATION}" == "true" ]]; then
 	awk '$0=NR$0' Plug-in > Plug-2
 	awk '{print "	" $0}' Plug-2 > Plug-in
 	sed -i "s/^/TIME g \"/g" Plug-in
-	cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c > CPU
-        cat /proc/cpuinfo | grep "cpu cores" | uniq >> CPU
-        sed -i 's|[[:space:]]||g; s|^.||' CPU && sed -i 's|CPU||g; s|pucores:||' CPU
-        CPUNAME="$(awk 'NR==1' CPU)" && CPUCORES="$(awk 'NR==2' CPU)"
-        rm -rf CPU
 
 	if [[ `grep -c "KERNEL_PATCHVER:=" ${Home}/target/linux/${TARGET_BOARD}/Makefile` -eq '1' ]]; then
-		PATCHVER=$(grep KERNEL_PATCHVER:= ${Home}/target/linux/${TARGET_BOARD}/Makefile | cut -c18-100)
+		PATCHVE="$(egrep -o 'KERNEL_PATCHVER:=[0-9]+\.[0-9]+' ${Home}/target/linux/${TARGET_BOARD}/Makefile |cut -d "=" -f2)"
 	elif [[ `grep -c "KERNEL_PATCHVER=" ${Home}/target/linux/${TARGET_BOARD}/Makefile` -eq '1' ]]; then
-		PATCHVER=$(grep KERNEL_PATCHVER= ${Home}/target/linux/${TARGET_BOARD}/Makefile | cut -c17-100)
+		PATCHVE="$(egrep -o 'KERNEL_PATCHVER=[0-9]+\.[0-9]+' ${Home}/target/linux/${TARGET_BOARD}/Makefile |cut -d "=" -f2)"
 	else
 		PATCHVER="unknown"
 	fi
-	if [[ ! "${PATCHVER}" == "unknown" ]]; then
-		PATCHVER=$(egrep -o "${PATCHVER}.[0-9]+" ${Home}/include/kernel-version.mk)
-	fi
+	[[ -n ${PATCHVE} ]] && PATCHVER=$(egrep -o "${PATCHVE}.[0-9]+" ${Home}/include/kernel-version.mk)
 	
 	if [[ "${Modelfile}" == "openwrt_amlogic" ]]; then
 		[[ -e $GITHUB_WORKSPACE/amlogic_openwrt ]] && source $GITHUB_WORKSPACE/amlogic_openwrt
-		[[ "${amlogic_kernel}" == "5.4.155" ]] && {
-			curl -fsSL https://raw.githubusercontent.com/mdtycl/amlogic-s905d/master/.github/workflows/build-openwrt-lede.yml > open.yml
+		[[ "${amlogic_kernel}" == "5.12.12_5.4.127" ]] && {
+			curl -fsSL https://raw.githubusercontent.com/ophub/amlogic-s9xxx-openwrt/main/.github/workflows/build-openwrt-lede.yml > open.yml
 			Make_ker="$(cat open.yml | grep ./make | cut -d "k" -f3 | sed s/[[:space:]]//g)"
 			TARGET_kernel="${Make_ker}"
 			TARGET_model="${amlogic_model}"
@@ -319,7 +440,6 @@ if [[ "${BY_INFORMATION}" == "true" ]]; then
 fi
 rm -rf ${Home}/files/{README,README.md}
 }
-
 
 ################################################################################################################
 # 提示信息
